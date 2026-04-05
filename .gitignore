@@ -1,0 +1,15 @@
+# Compiled output
+out/
+
+# IDE settings
+.vscode/
+.idea/
+*.iml
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# XAMPP installer
+*.exe
