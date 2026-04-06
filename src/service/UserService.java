@@ -7,6 +7,7 @@ import java.util.List;
 import config.DBConnection;
 import dao.ActivityLogDao;
 import dao.RoleDao;
+import dao.SessionDao;
 import dao.UserDao;
 import model.RoleType;
 import model.User;
@@ -16,6 +17,7 @@ public class UserService {
     private final UserDao userDao = new UserDao();
     private final RoleDao roleDao = new RoleDao();
     private final ActivityLogDao activityLogDao = new ActivityLogDao();
+    private final SessionDao sessionDao = new SessionDao();
 
     public List<User> listCashiers() throws SQLException {
         return userDao.listCashiers();
@@ -65,6 +67,23 @@ public class UserService {
                 connection.setAutoCommit(true);
             }
         }
+    }
+
+    public int clockIn(int cashierId) throws SQLException {
+        try (Connection connection = DBConnection.getConnection()) {
+            sessionDao.clockOutOpenSessions(connection, cashierId);
+            return sessionDao.clockIn(connection, cashierId);
+        }
+    }
+
+    public void clockOut(int sessionId) throws SQLException {
+        try (Connection connection = DBConnection.getConnection()) {
+            sessionDao.clockOut(connection, sessionId);
+        }
+    }
+
+    public java.util.List<Object[]> listSessions() throws SQLException {
+        return sessionDao.listSessions();
     }
 
     public void setCashierActive(int cashierId, boolean active, User actor) throws SQLException {

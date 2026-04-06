@@ -55,7 +55,7 @@ public class MainFrame extends JFrame {
         loginPanel = new LoginPanel(authService, this::handleLogin);
         adminPanel = new AdminPanel(dashboardService, productService, inventoryService, userService, salesService,
                 this::logout);
-        cashierPanel = new CashierPanel(productService, salesService, this::logout);
+        cashierPanel = new CashierPanel(productService, salesService, userService, this::logout);
 
         contentPanel.add(loginPanel, LOGIN_CARD);
         contentPanel.add(adminPanel, ADMIN_CARD);
@@ -86,6 +86,7 @@ public class MainFrame extends JFrame {
     }
 
     private void logout() {
+        cashierPanel.clockOut();
         showLogin();
     }
 

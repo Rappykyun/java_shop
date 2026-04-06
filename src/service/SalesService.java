@@ -106,6 +106,10 @@ public class SalesService {
         return salesDao.listTransactions();
     }
 
+    public List<SalesTransaction> listTransactions(java.time.LocalDate from, java.time.LocalDate to) throws SQLException {
+        return salesDao.listTransactions(from, to);
+    }
+
     public ReceiptSummary findReceipt(int transactionId) throws SQLException {
         return salesDao.findReceiptByTransactionId(transactionId);
     }

@@ -36,6 +36,7 @@ import model.SaleItem;
 import model.User;
 import service.ProductService;
 import service.SalesService;
+import service.UserService;
 import ui.components.RoundedButton;
 import ui.components.RoundedPanel;
 import ui.components.UIFactory;
@@ -45,6 +46,7 @@ import util.ImageUtils;
 public class CashierPanel extends JPanel {
     private final ProductService productService;
     private final SalesService salesService;
+    private final UserService userService;
     private final Runnable logoutHandler;
 
     private final JTextField searchField = UIFactory.createTextField();
@@ -66,10 +68,12 @@ public class CashierPanel extends JPanel {
     private final Map<Integer, Product> availableProductMap = new HashMap<>();
     private User currentUser;
     private LocalDateTime loginTime;
+    private int currentSessionId;
 
-    public CashierPanel(ProductService productService, SalesService salesService, Runnable logoutHandler) {
+    public CashierPanel(ProductService productService, SalesService salesService, UserService userService, Runnable logoutHandler) {
         this.productService = productService;
         this.salesService = salesService;
+        this.userService = userService;
         this.logoutHandler = logoutHandler;
 
         setLayout(new BorderLayout(12, 12));
@@ -92,7 +96,23 @@ public class CashierPanel extends JPanel {
         this.currentUser = currentUser;
         this.loginTime = LocalDateTime.now();
         this.cashierLabel.setText("Cashier: " + currentUser.getFullName());
+        try {
+            this.currentSessionId = userService.clockIn(currentUser.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         clearCart();
+    }
+
+    public void clockOut() {
+        if (currentSessionId > 0) {
+            try {
+                userService.clockOut(currentSessionId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            currentSessionId = 0;
+        }
     }
 
     public void refreshProducts() throws SQLException {

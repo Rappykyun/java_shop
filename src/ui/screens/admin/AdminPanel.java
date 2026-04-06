@@ -31,6 +31,7 @@ public class AdminPanel extends JPanel {
     private final InventoryPanel inventoryPanel;
     private final UsersPanel usersPanel;
     private final TransactionsPanel transactionsPanel;
+    private final SessionsPanel sessionsPanel;
 
     private final CardLayout contentLayout = new CardLayout();
     private final JPanel contentPanel = new JPanel(contentLayout);
@@ -47,6 +48,7 @@ public class AdminPanel extends JPanel {
         inventoryPanel = new InventoryPanel(inventoryService);
         usersPanel = new UsersPanel(userService);
         transactionsPanel = new TransactionsPanel(salesService);
+        sessionsPanel = new SessionsPanel(userService);
 
         contentPanel.setOpaque(false);
         contentPanel.add(dashboardPanel, "dashboard");
@@ -54,6 +56,7 @@ public class AdminPanel extends JPanel {
         contentPanel.add(inventoryPanel, "inventory");
         contentPanel.add(usersPanel, "users");
         contentPanel.add(transactionsPanel, "transactions");
+        contentPanel.add(sessionsPanel, "sessions");
 
         add(buildSidebar(logoutHandler), BorderLayout.WEST);
         add(buildMainContent(), BorderLayout.CENTER);
@@ -73,6 +76,7 @@ public class AdminPanel extends JPanel {
         inventoryPanel.refreshData();
         usersPanel.refreshData();
         transactionsPanel.refreshData();
+        sessionsPanel.refreshData();
         showSection("dashboard");
     }
 
@@ -112,6 +116,8 @@ public class AdminPanel extends JPanel {
         sidebar.add(createMenuButton("Cashiers", "users"));
         sidebar.add(Box.createVerticalStrut(8));
         sidebar.add(createMenuButton("Transactions", "transactions"));
+        sidebar.add(Box.createVerticalStrut(8));
+        sidebar.add(createMenuButton("Time In / Out", "sessions"));
 
         sidebar.add(Box.createVerticalGlue());
         RoundedButton logoutButton = new RoundedButton("Logout", Theme.GOLD, Theme.ESPRESSO_DARK);
@@ -180,6 +186,7 @@ public class AdminPanel extends JPanel {
             case "inventory" -> inventoryPanel.refreshData();
             case "users" -> usersPanel.refreshData();
             case "transactions" -> transactionsPanel.refreshData();
+            case "sessions" -> sessionsPanel.refreshData();
             default -> {
             }
         }

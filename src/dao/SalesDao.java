@@ -72,31 +72,43 @@ public class SalesDao {
     }
 
     public List<SalesTransaction> listTransactions() throws SQLException {
-        String sql = """
+        return listTransactions(null, null);
+    }
+
+    public List<SalesTransaction> listTransactions(java.time.LocalDate from, java.time.LocalDate to) throws SQLException {
+        StringBuilder sql = new StringBuilder("""
                 SELECT st.id, st.transaction_number, u.full_name AS cashier_name, st.subtotal, st.total,
                        st.payment_amount, st.change_amount, st.item_count, st.created_at, r.receipt_number
                 FROM sales_transactions st
                 JOIN users u ON u.id = st.cashier_id
                 JOIN receipts r ON r.transaction_id = st.id
-                ORDER BY st.created_at DESC
-                LIMIT 200
-                """;
+                """);
+        if (from != null && to != null) {
+            sql.append(" WHERE st.created_at >= ? AND st.created_at < ? ");
+        }
+        sql.append(" ORDER BY st.created_at DESC LIMIT 500");
+
         List<SalesTransaction> transactions = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql);
-                ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                transactions.add(new SalesTransaction(
-                        resultSet.getInt("id"),
-                        resultSet.getString("transaction_number"),
-                        resultSet.getString("cashier_name"),
-                        resultSet.getBigDecimal("subtotal"),
-                        resultSet.getBigDecimal("total"),
-                        resultSet.getBigDecimal("payment_amount"),
-                        resultSet.getBigDecimal("change_amount"),
-                        resultSet.getInt("item_count"),
-                        DateTimeUtils.fromTimestamp(resultSet.getTimestamp("created_at")),
-                        resultSet.getString("receipt_number")));
+                PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+            if (from != null && to != null) {
+                statement.setTimestamp(1, java.sql.Timestamp.valueOf(from.atStartOfDay()));
+                statement.setTimestamp(2, java.sql.Timestamp.valueOf(to.plusDays(1).atStartOfDay()));
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    transactions.add(new SalesTransaction(
+                            resultSet.getInt("id"),
+                            resultSet.getString("transaction_number"),
+                            resultSet.getString("cashier_name"),
+                            resultSet.getBigDecimal("subtotal"),
+                            resultSet.getBigDecimal("total"),
+                            resultSet.getBigDecimal("payment_amount"),
+                            resultSet.getBigDecimal("change_amount"),
+                            resultSet.getInt("item_count"),
+                            DateTimeUtils.fromTimestamp(resultSet.getTimestamp("created_at")),
+                            resultSet.getString("receipt_number")));
+                }
             }
         }
         return transactions;
