@@ -86,6 +86,10 @@ public class UserService {
         return sessionDao.listSessions();
     }
 
+    public java.util.List<Object[]> listSessions(RoleType roleType) throws SQLException {
+        return sessionDao.listSessions(roleType);
+    }
+
     public void setCashierActive(int cashierId, boolean active, User actor) throws SQLException {
         try (Connection connection = DBConnection.getConnection()) {
             connection.setAutoCommit(false);

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import config.DBConnection;
+import model.RoleType;
 import util.DateTimeUtils;
 
 public class SessionDao {
@@ -48,31 +49,41 @@ public class SessionDao {
     }
 
     public List<Object[]> listSessions() throws SQLException {
+        return listSessions(null);
+    }
+
+    public List<Object[]> listSessions(RoleType roleType) throws SQLException {
         String sql = """
                 SELECT cs.id, u.full_name, cs.time_in, cs.time_out
                 FROM cashier_sessions cs
                 JOIN users u ON u.id = cs.cashier_id
+                JOIN roles r ON r.id = u.role_id
+                WHERE (? IS NULL OR r.name = ?)
                 ORDER BY cs.time_in DESC
                 """;
         List<Object[]> rows = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                LocalDateTime timeIn = DateTimeUtils.fromTimestamp(rs.getTimestamp("time_in"));
-                LocalDateTime timeOut = DateTimeUtils.fromTimestamp(rs.getTimestamp("time_out"));
-                String duration = "-";
-                if (timeIn != null && timeOut != null) {
-                    long minutes = java.time.Duration.between(timeIn, timeOut).toMinutes();
-                    duration = (minutes / 60) + "h " + (minutes % 60) + "m";
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
+            String roleName = roleType == null ? null : roleType.name();
+            stmt.setString(1, roleName);
+            stmt.setString(2, roleName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    LocalDateTime timeIn = DateTimeUtils.fromTimestamp(rs.getTimestamp("time_in"));
+                    LocalDateTime timeOut = DateTimeUtils.fromTimestamp(rs.getTimestamp("time_out"));
+                    String duration = "-";
+                    if (timeIn != null && timeOut != null) {
+                        long minutes = java.time.Duration.between(timeIn, timeOut).toMinutes();
+                        duration = (minutes / 60) + "h " + (minutes % 60) + "m";
+                    }
+                    rows.add(new Object[]{
+                            rs.getInt("id"),
+                            rs.getString("full_name"),
+                            DateTimeUtils.format(timeIn),
+                            timeOut == null ? "Still clocked in" : DateTimeUtils.format(timeOut),
+                            duration
+                    });
                 }
-                rows.add(new Object[]{
-                        rs.getInt("id"),
-                        rs.getString("full_name"),
-                        DateTimeUtils.format(timeIn),
-                        timeOut == null ? "Still clocked in" : DateTimeUtils.format(timeOut),
-                        duration
-                });
             }
         }
         return rows;

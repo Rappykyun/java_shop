@@ -86,6 +86,7 @@ public class MainFrame extends JFrame {
     }
 
     private void logout() {
+        adminPanel.clockOut();
         cashierPanel.clockOut();
         showLogin();
     }

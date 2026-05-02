@@ -8,6 +8,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
 import config.AppConfig;
@@ -44,6 +46,9 @@ import util.CurrencyUtils;
 import util.ImageUtils;
 
 public class CashierPanel extends JPanel {
+    private static final DateTimeFormatter HEADER_DATE_TIME_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd, yyyy | hh:mm:ss a");
+
     private final ProductService productService;
     private final SalesService salesService;
     private final UserService userService;
@@ -56,6 +61,7 @@ public class CashierPanel extends JPanel {
     private final DefaultTableModel cartTableModel;
     private final JTable cartTable;
     private final JLabel cashierLabel = new JLabel();
+    private final JLabel dateTimeLabel = new JLabel("", SwingConstants.RIGHT);
     private final JLabel subtotalLabel = new JLabel(CurrencyUtils.format(BigDecimal.ZERO));
     private final JLabel totalLabel = new JLabel(CurrencyUtils.format(BigDecimal.ZERO));
     private final JTextField paymentField = UIFactory.createTextField();
@@ -90,6 +96,7 @@ public class CashierPanel extends JPanel {
 
         add(buildHeader(), BorderLayout.NORTH);
         add(buildContent(), BorderLayout.CENTER);
+        startHeaderClock();
     }
 
     public void setCurrentUser(User currentUser) {
@@ -147,10 +154,29 @@ public class CashierPanel extends JPanel {
 
         header.add(leftPanel, BorderLayout.WEST);
 
+        JPanel rightPanel = new JPanel();
+        rightPanel.setOpaque(false);
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
+
+        dateTimeLabel.setFont(Theme.BODY_BOLD_FONT);
+        dateTimeLabel.setForeground(Theme.ESPRESSO);
+        rightPanel.add(dateTimeLabel);
+        rightPanel.add(Box.createHorizontalStrut(18));
+
         RoundedButton logoutButton = new RoundedButton("Logout", Theme.GOLD, Theme.ESPRESSO_DARK);
         logoutButton.addActionListener(event -> logoutHandler.run());
-        header.add(logoutButton, BorderLayout.EAST);
+        rightPanel.add(logoutButton);
+        header.add(rightPanel, BorderLayout.EAST);
         return header;
+    }
+
+    private void startHeaderClock() {
+        updateHeaderClock();
+        new Timer(1000, event -> updateHeaderClock()).start();
+    }
+
+    private void updateHeaderClock() {
+        dateTimeLabel.setText(LocalDateTime.now().format(HEADER_DATE_TIME_FORMAT));
     }
 
     private JPanel buildContent() {
@@ -310,11 +336,8 @@ public class CashierPanel extends JPanel {
 
         JPanel actionRow = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 6, 4));
         actionRow.setOpaque(false);
-        RoundedButton clearButton = new RoundedButton("Clear Cart", Theme.GOLD, Theme.ESPRESSO_DARK);
         RoundedButton checkoutButton = new RoundedButton("Complete Sale", Theme.ESPRESSO, java.awt.Color.WHITE);
-        clearButton.addActionListener(event -> clearCart());
         checkoutButton.addActionListener(event -> completeSale());
-        actionRow.add(clearButton);
         actionRow.add(checkoutButton);
         footer.add(actionRow);
 

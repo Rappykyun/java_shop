@@ -35,7 +35,7 @@ public class InventoryPanel extends JPanel {
         setOpaque(false);
 
         stockModel = new DefaultTableModel(
-                new Object[] { "ID", "SKU", "Name", "Stock", "Threshold", "Status" }, 0) {
+                new Object[] { "ID", "SKU", "Name", "Stock" }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -45,7 +45,7 @@ public class InventoryPanel extends JPanel {
         stockTable.removeColumn(stockTable.getColumnModel().getColumn(0));
 
         movementModel = new DefaultTableModel(
-                new Object[] { "Product", "Type", "Change", "Previous", "New", "Note", "By", "Created" }, 0) {
+                new Object[] { "Product", "Type", "Change", "Previous", "New", "Note", "Cashier", "Created" }, 0) {
                     @Override
                     public boolean isCellEditable(int row, int column) {
                         return false;
@@ -100,9 +100,7 @@ public class InventoryPanel extends JPanel {
                     product.getId(),
                     product.getSku(),
                     product.getName(),
-                    product.getStockQuantity(),
-                    product.getLowStockThreshold(),
-                    product.getStockQuantity() <= product.getLowStockThreshold() ? "Low Stock" : "Healthy"
+                    product.getStockQuantity()
             });
         }
     }

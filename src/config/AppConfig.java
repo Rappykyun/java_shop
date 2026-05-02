@@ -23,8 +23,8 @@ public final class AppConfig {
     public static final String STORE_WEBSITE = "www.cuddlecup.ph";
     public static final String POS_PROVIDER = "Information Systems Inc.";
     public static final String ACCREDITATION_NO = "0300003305150000071263B";
-    public static final String ACCREDITATION_DATE_ISSUED = "04/16/2007";
-    public static final String ACCREDITATION_VALID_UNTIL = "07/31/2026";
+    public static final String ACCREDITATION_DATE_ISSUED = "09/12/2026";
+    public static final String ACCREDITATION_VALID_UNTIL = "03/05/2050";
     public static final double VAT_RATE = 0.12;
 
     private AppConfig() {

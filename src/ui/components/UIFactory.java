@@ -119,7 +119,7 @@ public final class UIFactory {
         card.setLayout(new BorderLayout(8, 8));
         card.setBorder(new EmptyBorder(18, 18, 18, 18));
 
-        JPanel header = new JPanel(new GridLayout(2, 1, 0, 4));
+        JPanel header = new JPanel(new GridLayout(1, 1, 0, 4));
         header.setOpaque(false);
 
         JLabel titleLabel = new JLabel(title.toUpperCase());
@@ -130,12 +130,7 @@ public final class UIFactory {
         valueLabel.setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 30));
         valueLabel.setForeground(Theme.ESPRESSO);
 
-        JLabel captionLabel = new JLabel("Live store snapshot");
-        captionLabel.setFont(Theme.SMALL_FONT);
-        captionLabel.setForeground(Theme.TEXT_MUTED);
-
         header.add(titleLabel);
-        header.add(captionLabel);
 
         card.add(header, BorderLayout.NORTH);
         card.add(valueLabel, BorderLayout.CENTER);

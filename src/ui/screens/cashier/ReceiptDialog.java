@@ -81,10 +81,8 @@ public final class ReceiptDialog {
 
         addLogo(panel);
         addCenteredBold(panel, AppConfig.STORE_NAME, RECEIPT_HEADER);
-        addCentered(panel, AppConfig.STORE_OPERATOR, RECEIPT_FONT);
         addCentered(panel, AppConfig.STORE_ADDRESS, RECEIPT_FONT);
         addCentered(panel, "VAT REG TIN: " + AppConfig.VAT_REG_TIN, RECEIPT_FONT);
-        addCentered(panel, "MIN: " + AppConfig.MIN, RECEIPT_FONT);
         addCenteredSeparator(panel);
 
         addCenteredBold(panel, "SALES INVOICE", RECEIPT_BOLD);
@@ -131,8 +129,6 @@ public final class ReceiptDialog {
         addCenteredSeparator(panel);
 
         addCentered(panel, "This serves as your OFFICIAL RECEIPT", RECEIPT_SMALL);
-        addCentered(panel, "POS Provider: " + AppConfig.POS_PROVIDER, RECEIPT_SMALL);
-        addCentered(panel, "Accreditation No: " + AppConfig.ACCREDITATION_NO, RECEIPT_SMALL);
         addCenteredSeparator(panel);
 
         addVerticalGap(panel, 6);
@@ -148,8 +144,8 @@ public final class ReceiptDialog {
         addCenteredBold(panel, "THANK YOU FOR DINING WITH US!", RECEIPT_BOLD);
         addCentered(panel, "Please come again.", RECEIPT_FONT);
         addCentered(panel, "Visit us at: " + AppConfig.STORE_WEBSITE, RECEIPT_FONT);
-        addCentered(panel, "Date Issued: " + AppConfig.ACCREDITATION_DATE_ISSUED, RECEIPT_FONT);
-        addCentered(panel, "Valid Until: " + AppConfig.ACCREDITATION_VALID_UNTIL, RECEIPT_FONT);
+        addCentered(panel, "DATE ISSUED; " + AppConfig.ACCREDITATION_DATE_ISSUED, RECEIPT_FONT);
+        addCentered(panel, "VALID UNTIL; " + AppConfig.ACCREDITATION_VALID_UNTIL, RECEIPT_FONT);
         addCenteredSeparator(panel);
 
         String buzzer = receipt.getBuzzerNumber() != null && !receipt.getBuzzerNumber().isEmpty()
