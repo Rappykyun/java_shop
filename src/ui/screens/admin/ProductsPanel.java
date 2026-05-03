@@ -40,7 +40,7 @@ public class ProductsPanel extends JPanel {
         setOpaque(false);
 
         tableModel = new DefaultTableModel(new Object[] {
-                "ID", "SKU", "Name", "Category", "Price", "Stock", "Low Stock", "Status"
+                "ID", "SKU", "Name", "Category", "Price", "Stock", "Status"
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -116,7 +116,6 @@ public class ProductsPanel extends JPanel {
                     product.getCategory(),
                     CurrencyUtils.format(product.getPrice()),
                     product.getStockQuantity(),
-                    product.getLowStockThreshold(),
                     product.isActive() ? "Active" : "Inactive"
             });
         }
