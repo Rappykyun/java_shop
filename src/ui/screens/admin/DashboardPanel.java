@@ -13,7 +13,7 @@ import util.CurrencyUtils;
 
 public class DashboardPanel extends JPanel {
     private final DashboardService dashboardService;
-    private final JPanel metricsPanel = new JPanel(new GridLayout(1, 4, 16, 16));
+    private final JPanel metricsPanel = new JPanel(new GridLayout(1, 3, 16, 16));
 
     public DashboardPanel(DashboardService dashboardService) {
         this.dashboardService = dashboardService;
@@ -30,7 +30,6 @@ public class DashboardPanel extends JPanel {
         metricsPanel.removeAll();
         metricsPanel.add(UIFactory.createMetricCard("Today's Sales", CurrencyUtils.format(summary.getTodaySales())));
         metricsPanel.add(UIFactory.createMetricCard("Transactions", String.valueOf(summary.getTodayTransactions())));
-        metricsPanel.add(UIFactory.createMetricCard("Low Stock", String.valueOf(summary.getLowStockCount())));
         metricsPanel.add(UIFactory.createMetricCard("Active Cashiers", String.valueOf(summary.getActiveCashiers())));
         metricsPanel.revalidate();
         metricsPanel.repaint();
